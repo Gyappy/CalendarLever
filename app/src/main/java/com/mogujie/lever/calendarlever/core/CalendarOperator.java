@@ -3,7 +3,6 @@ package com.mogujie.lever.calendarlever.core;
 import com.mogujie.lever.calendarlever.ICalendar;
 import com.mogujie.lever.calendarlever.ICallBack;
 import com.mogujie.lever.calendarlever.impl.DefaultCalendar;
-import com.mogujie.lever.calendarlever.impl.MGNonBlockCalendar;
 import com.mogujie.lever.calendarlever.impl.NonBlockCalendar;
 
 /**
@@ -37,7 +36,6 @@ public class CalendarOperator {
 
     public CalendarOperator getNonBlockEngine() {
         CalendarUtils = NonBlockCalendar.getInstance();
-//        CalendarUtils = MGNonBlockCalendar.getInstance();
         return this;
     }
 

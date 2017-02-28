@@ -1,4 +1,4 @@
-package com.mogujie.lever.calendarlever.impl;
+package com.mogujie.lever.calendarlever.core.impl;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -9,14 +9,15 @@ import android.provider.BaseColumns;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 
-import com.mogujie.lever.calendarlever.core.CalendarBuilder;
-import com.mogujie.lever.calendarlever.ICalendar;
-import com.mogujie.lever.calendarlever.ICallBack;
+import com.mogujie.lever.calendarlever.core.ICalendar;
+import com.mogujie.lever.calendarlever.core.ICallBack;
+import com.mogujie.lever.calendarlever.core.other.CalendarBuilder;
 
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Created by chenhuigu on 17/2/25.
+ * Created by guchenhui on 17/2/25.
  */
 
 public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
@@ -31,6 +32,7 @@ public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
     @Override
     public void insert(CalendarBuilder obj, ICallBack callBack) {
         try {
+            Thread.sleep(2000);
             // 随意取一个日历
             String calId = getCalendarId(obj.getContext());
             // 为日历添加一个事件
@@ -99,8 +101,20 @@ public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
         try {
             Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, obj.getEventId());
             obj.getContext().getContentResolver().delete(deleteUri, null, null);
-            //置回初始值
-            obj.setEventId(Long.MIN_VALUE);
+            if (!query(obj, new ICallBack() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onFailed() {
+
+                }
+            })) {
+                //置回初始值
+                obj.setEventId(Long.MIN_VALUE);
+            }
             callBackSuccess(obj.getContext(), callBack);
         } catch (Exception ignore) {
             callBackFailed(obj.getContext(), callBack);

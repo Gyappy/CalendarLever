@@ -5,27 +5,47 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/t1"
+        android:id="@+id/insert1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="插入事件" />
+        android:text="插入事件sync" />
+    <Button
+        android:id="@+id/insert2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="插入事件async" />
 
     <Button
-        android:id="@+id/t2"
+        android:id="@+id/delete1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="删除事件" />
+        android:text="删除事件sync" />
+    <Button
+        android:id="@+id/delete2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="删除事件async" />
 
     <Button
-        android:id="@+id/t3"
+        android:id="@+id/query1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="查询事件" />
+        android:text="查询事件sync" />
+    <Button
+        android:id="@+id/query2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询事件async" />
 
     <Button
-        android:id="@+id/t4"
+        android:id="@+id/reverse1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="翻转事件" />
+        android:text="反转事件sycn" />
+    <Button
+        android:id="@+id/reverse2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="反转事件asycn" />
 
 </LinearLayout>

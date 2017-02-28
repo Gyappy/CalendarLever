@@ -1,11 +1,11 @@
-package com.mogujie.lever.calendarlever.impl;
+package com.mogujie.lever.calendarlever.core.impl;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.mogujie.lever.calendarlever.core.CalendarBuilder;
-import com.mogujie.lever.calendarlever.ICallBack;
+import com.mogujie.lever.calendarlever.core.ICallBack;
+import com.mogujie.lever.calendarlever.core.other.CalendarBuilder;
 
 /**
  * Created by chenhuigu on 17/2/26.
@@ -13,21 +13,12 @@ import com.mogujie.lever.calendarlever.ICallBack;
 
 public class NonBlockCalendar extends BaseCalendar {
 
-    private volatile static NonBlockCalendar mInstance;
-
     private NonBlockCalendar() {
 
     }
 
-    public static NonBlockCalendar getInstance() {
-        if (mInstance == null) {
-            synchronized (NonBlockCalendar.class) {
-                if (mInstance == null) {
-                    mInstance = new NonBlockCalendar();
-                }
-            }
-        }
-        return mInstance;
+    public static NonBlockCalendar newInstance() {
+        return new NonBlockCalendar();
     }
 
     @Override
@@ -37,7 +28,7 @@ public class NonBlockCalendar extends BaseCalendar {
             public void run() {
                 NonBlockCalendar.super.reverse(obj, callBack);
             }
-        }).run();
+        }).start();
     }
 
     @Override
@@ -47,7 +38,7 @@ public class NonBlockCalendar extends BaseCalendar {
             public void run() {
                 NonBlockCalendar.super.insert(obj, callBack);
             }
-        }).run();
+        }).start();
     }
 
     @Override
@@ -55,13 +46,9 @@ public class NonBlockCalendar extends BaseCalendar {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (NonBlockCalendar.super.query(obj, callBack)) {
-                    callBackSuccess(obj.getContext(), callBack);
-                } else {
-                    callBackFailed(obj.getContext(), callBack);
-                }
+                NonBlockCalendar.super.query(obj, callBack);
             }
-        }).run();
+        }).start();
         return true;
     }
 
@@ -72,7 +59,7 @@ public class NonBlockCalendar extends BaseCalendar {
             public void run() {
                 NonBlockCalendar.super.delete(obj, callBack);
             }
-        }).run();
+        }).start();
     }
 
     @Override

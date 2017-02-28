@@ -1,10 +1,10 @@
-package com.mogujie.lever.calendarlever.core;
+package com.mogujie.lever.calendarlever.core.other;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 /**
- * Created by chenhuigu on 17/2/22.
+ * Created by ouyi on 17/2/22.
  */
 
 public class CalendarBuilder {
@@ -17,14 +17,7 @@ public class CalendarBuilder {
     private String iid;
     private long eventId;
 
-    private CalendarBuilder(Builder builder) {
-        context = builder.context;
-        stratTime = builder.stratTime;
-        endTime = builder.endTime;
-        title = builder.title;
-        description = builder.description;
-        iid = builder.iid;
-        eventId = builder.eventId;
+    private CalendarBuilder() {
     }
 
     public static class Builder implements IBuilder<CalendarBuilder> {
@@ -38,7 +31,7 @@ public class CalendarBuilder {
         //被成功插入后分配的ID
         private long eventId = Long.MIN_VALUE;
 
-        public Builder(@NonNull Context val,@NonNull String id, long st, long et) {
+        public Builder(@NonNull Context val, @NonNull String id, long st, long et) {
             context = val;
             iid = id;
             stratTime = st;
@@ -62,7 +55,15 @@ public class CalendarBuilder {
 
         @Override
         public CalendarBuilder build() {
-            return new CalendarBuilder(this);
+            CalendarBuilder result = new CalendarBuilder();
+            result.context = this.context;
+            result.stratTime = this.stratTime;
+            result.endTime = this.endTime;
+            result.title = this.title;
+            result.description = this.description;
+            result.iid = this.iid;
+            result.eventId = this.eventId;
+            return result;
         }
     }
 

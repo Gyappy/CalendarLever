@@ -38,8 +38,9 @@ public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
             String calId = getCalendarId(obj.getContext());
             // 为日历添加一个事件
             long eventId = insertEvent(obj.getContext(), obj.getTitle(), obj.getDescription(), calId, obj.getStratTime(), obj.getEndTime(), obj.getIid());
-            if (eventId == Long.MIN_VALUE) {
+            if (eventId == Long.MIN_VALUE || eventId <= 0) {
                 callBackFailed(callBack);
+                return;
             } else {
                 //存下这个ID
                 obj.setEventId(eventId);
@@ -66,7 +67,6 @@ public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
             Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
             ContentUris.appendId(builder, obj.getStratTime());
             ContentUris.appendId(builder, obj.getEndTime());
-
 
             String selection = CalendarContract.Events.ORGANIZER + " = ?";
             String[] selectionArgs = new String[]{obj.getIid()};

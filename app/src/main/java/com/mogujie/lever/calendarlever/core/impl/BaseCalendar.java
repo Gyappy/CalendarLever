@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
     private static final int PRE_NOTICE_TIME = 5;
+    protected Context mCtx;
 
     /**
      * 插入事件
@@ -38,16 +39,16 @@ public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
             // 为日历添加一个事件
             long eventId = insertEvent(obj.getContext(), obj.getTitle(), obj.getDescription(), calId, obj.getStratTime(), obj.getEndTime(), obj.getIid());
             if (eventId == Long.MIN_VALUE) {
-                callBackFailed(obj.getContext(), callBack);
+                callBackFailed(callBack);
             } else {
                 //存下这个ID
                 obj.setEventId(eventId);
             }
             // 为事件添加一个提醒 提前 @PRE_NOTICE_TIME 分钟有提醒
             insertReminder(obj.getContext(), eventId, PRE_NOTICE_TIME);
-            callBackSuccess(obj.getContext(), callBack);
+            callBackSuccess(callBack);
         } catch (Exception ignore) {
-            callBackFailed(obj.getContext(), callBack);
+            callBackFailed(callBack);
         }
     }
 
@@ -72,7 +73,7 @@ public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
             cursor = obj.getContext().getContentResolver().query(builder.build(), new String[]{CalendarContract.Reminders.EVENT_ID}, selection, selectionArgs, null);
             if (cursor != null && cursor.moveToNext()) {
                 obj.setEventId(cursor.getLong(0));
-                callBackSuccess(obj.getContext(), callBack);
+                callBackSuccess(callBack);
                 return true;
             }
         } catch (Exception ignore) {
@@ -82,7 +83,7 @@ public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
                 cursor.close();
             }
         }
-        callBackFailed(obj.getContext(), callBack);
+        callBackFailed(callBack);
         return false;
     }
 
@@ -94,30 +95,28 @@ public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
      * @param callBack
      */
     @Override
-    public void delete(CalendarBuilder obj, ICallBack callBack) {
+    public void delete(final CalendarBuilder obj, final ICallBack callBack) {
         if (obj.getEventId() == Long.MIN_VALUE) {
             throw new RuntimeException("you must to set the value of CalendarBuilder$eventId");
         }
         try {
             Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, obj.getEventId());
             obj.getContext().getContentResolver().delete(deleteUri, null, null);
-            if (!query(obj, new ICallBack() {
+            query(obj, new ICallBack() {
                 @Override
                 public void onSuccess() {
-
+                    callBackSuccess(callBack);
                 }
 
                 @Override
                 public void onFailed() {
-
+                    //置回初始值
+                    obj.setEventId(Long.MIN_VALUE);
+                    callBackSuccess(callBack);
                 }
-            })) {
-                //置回初始值
-                obj.setEventId(Long.MIN_VALUE);
-            }
-            callBackSuccess(obj.getContext(), callBack);
+            });
         } catch (Exception ignore) {
-            callBackFailed(obj.getContext(), callBack);
+            callBackFailed(callBack);
         }
     }
 
@@ -194,11 +193,15 @@ public abstract class BaseCalendar implements ICalendar<CalendarBuilder> {
         return context.getContentResolver().insert(CalendarContract.Reminders.CONTENT_URI, values);
     }
 
-    public void callBackSuccess(@NonNull Context context, @NonNull ICallBack callback) {
-        callback.onSuccess();
+    public void callBackSuccess(ICallBack callback) {
+        if (callback != null) {
+            callback.onSuccess();
+        }
     }
 
-    public void callBackFailed(@NonNull Context context, @NonNull ICallBack callback) {
-        callback.onFailed();
+    public void callBackFailed(ICallBack callback) {
+        if (callback != null) {
+            callback.onFailed();
+        }
     }
 }

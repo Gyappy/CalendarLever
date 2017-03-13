@@ -22,7 +22,7 @@ public class DemoAct extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actlayout);
         Button insert1 = (Button) findViewById(R.id.insert1);
-        final CalendarBuilder event = new CalendarBuilder.Builder(DemoAct.this, "33", 1488123906 * 1000L, 1488123906 * 1000L).description("试试a 描述").title("plus版本").build();
+        final CalendarBuilder event = new CalendarBuilder.Builder(DemoAct.this, "33", 1488123906 * 1000L, 1488123906 * 1000L).description("欢迎提出意见多多交流,跪求star").title("我叫股晨晖").build();
         insert1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

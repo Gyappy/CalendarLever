@@ -1,7 +1,6 @@
 package com.mogujie.lever.calendarlever.core.impl;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.mogujie.lever.calendarlever.core.ICallBack;
@@ -23,16 +22,28 @@ public class NonBlockCalendar extends BaseCalendar {
 
     @Override
     public void reverse(final CalendarBuilder obj, final ICallBack callBack) {
+        mCtx = obj.getContext();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                NonBlockCalendar.super.reverse(obj, callBack);
+                NonBlockCalendar.super.query(obj, new ICallBack() {
+                    @Override
+                    public void onSuccess() {
+                        NonBlockCalendar.super.delete(obj, callBack);
+                    }
+
+                    @Override
+                    public void onFailed() {
+                        NonBlockCalendar.super.insert(obj, callBack);
+                    }
+                });
             }
         }).start();
     }
 
     @Override
     public void insert(final CalendarBuilder obj, final ICallBack callBack) {
+        mCtx = obj.getContext();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -43,6 +54,7 @@ public class NonBlockCalendar extends BaseCalendar {
 
     @Override
     public boolean query(final CalendarBuilder obj, final ICallBack callBack) {
+        mCtx = obj.getContext();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -54,6 +66,7 @@ public class NonBlockCalendar extends BaseCalendar {
 
     @Override
     public void delete(final CalendarBuilder obj, final ICallBack callBack) {
+        mCtx = obj.getContext();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -63,24 +76,24 @@ public class NonBlockCalendar extends BaseCalendar {
     }
 
     @Override
-    public void callBackSuccess(@NonNull final Context context, @NonNull final ICallBack callback) {
-        if (context instanceof Activity) {
-            ((Activity) context).runOnUiThread(new Runnable() {
+    public void callBackSuccess(@NonNull final ICallBack callback) {
+        if (mCtx instanceof Activity) {
+            ((Activity) mCtx).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    NonBlockCalendar.super.callBackSuccess(context, callback);
+                    NonBlockCalendar.super.callBackSuccess(callback);
                 }
             });
         }
     }
 
     @Override
-    public void callBackFailed(@NonNull final Context context, @NonNull final ICallBack callback) {
-        if (context instanceof Activity) {
-            ((Activity) context).runOnUiThread(new Runnable() {
+    public void callBackFailed(@NonNull final ICallBack callback) {
+        if (mCtx instanceof Activity) {
+            ((Activity) mCtx).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    NonBlockCalendar.super.callBackFailed(context, callback);
+                    NonBlockCalendar.super.callBackFailed(callback);
                 }
             });
         }
